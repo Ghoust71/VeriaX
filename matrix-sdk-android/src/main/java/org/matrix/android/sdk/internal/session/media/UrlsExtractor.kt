@@ -47,7 +47,10 @@ internal class UrlsExtractor @Inject constructor() {
                 }
                 ?.let { urlRegex.findAll(it) }
                 ?.map { it.value }
-                ?.filter { it.startsWith("https://") || it.startsWith("http://") }
+                // MODIFIED FOR VERIAX: Allow HTTP for local IP 192.168.100.80
+                ?.filter { url ->
+                    url.startsWith("https://") || url.startsWith("http://") && url.contains("192.168.100.80")
+                }
                 ?.distinct()
                 ?.toList()
                 .orEmpty()

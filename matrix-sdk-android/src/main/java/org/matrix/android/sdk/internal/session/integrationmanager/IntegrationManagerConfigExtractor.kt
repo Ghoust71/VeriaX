@@ -29,13 +29,17 @@ internal class IntegrationManagerConfigExtractor @Inject constructor() {
                     (config as? Map<*, *>)?.let { map ->
                         val apiUrl = map["api_url"] as? String
                         val uiUrl = map["ui_url"] as? String ?: apiUrl
-                        if (apiUrl != null &&
-                                apiUrl.startsWith("https://") &&
-                                uiUrl!!.startsWith("https://")) {
-                            return WellknownIntegrationManagerConfigEntity(
-                                    apiUrl = apiUrl,
-                                    uiUrl = uiUrl
-                            )
+                        if (apiUrl != null && uiUrl != null) {
+                            // MODIFIED FOR VERIAX: Allow HTTP for local IP 192.168.100.80
+                            val apiIsValid = apiUrl.startsWith("https://") || (apiUrl.startsWith("http://") && apiUrl.contains("192.168.100.80"))
+                            val uiIsValid = uiUrl.startsWith("https://") || (uiUrl.startsWith("http://") && uiUrl.contains("192.168.100.80"))
+                            
+                            if (apiIsValid && uiIsValid) {
+                                return WellknownIntegrationManagerConfigEntity(
+                                        apiUrl = apiUrl,
+                                        uiUrl = uiUrl
+                                )
+                            }
                         }
                     }
                 }

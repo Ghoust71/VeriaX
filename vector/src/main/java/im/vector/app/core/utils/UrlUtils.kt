@@ -20,11 +20,19 @@ fun String.isValidUrl(): Boolean {
 
 /**
  * Ensure string starts with "http". If it is not the case, "https://" is added, only if the String is not empty
+ * MODIFIED FOR VERIAX: Allows HTTP for local IP 192.168.100.80
  */
 fun String.ensureProtocol(): String {
     return when {
         isEmpty() -> this
-        !startsWith("http") -> "https://$this"
+        !startsWith("http") -> {
+            // Check if it's the local IP - if so, allow HTTP
+            if (contains("192.168.100.80")) {
+                "http://$this"
+            } else {
+                "https://$this"
+            }
+        }
         else -> this
     }
 }
